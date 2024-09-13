@@ -6,14 +6,20 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
+import me.dgahn.core.employee.query.EmployeeSearcher
 import me.dgahn.core.employee.usecase.EmployeeMaker
 import me.dgahn.web.employee.dto.Response
 import me.dgahn.web.employee.dto.toResponse
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
@@ -23,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile
 @Tag(name = "긴급연락망 API", description = "긴급연락망을 관리하는 API")
 class EmployeeController(
     private val maker: EmployeeMaker,
+    private val searcher: EmployeeSearcher,
 ) {
     @PostMapping("/api/employee", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     @Operation(
@@ -46,5 +53,26 @@ class EmployeeController(
         files: List<MultipartFile> = emptyList(),
     ): ResponseEntity<List<Response>> {
         return ResponseEntity(maker.make(data, files).map { it.toResponse() }, HttpStatus.CREATED)
+    }
+
+    @GetMapping("/api/employee")
+    @Operation(
+        summary = "긴급 연락망 목록을 조회",
+        description = "긴급 연락망 목록을 조회합니다. page, size를 통해 원하는 만큼 조회합니다.",
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                content = [Content(schema = Schema(implementation = Response::class))],
+            ),
+            ApiResponse(responseCode = "400", description = "Invalid input"),
+        ],
+    )
+    fun search(
+        @RequestParam(value = "page", defaultValue = "0") page: Int,
+        @RequestParam(value = "pageSize", defaultValue = "10") size: Int,
+    ): ResponseEntity<Page<Response>> {
+        val request = PageRequest.of(page, size)
+        val found = searcher.search(request).map { it.toResponse() }
+        return ResponseEntity.ok(PageImpl(found.toList(), request, found.totalElements))
     }
 }

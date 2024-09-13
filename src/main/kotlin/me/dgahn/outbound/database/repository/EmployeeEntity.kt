@@ -18,7 +18,7 @@ class EmployeeEntity(
     @Column(name = "joined_date")
     val joinedDate: LocalDate,
 ) {
-    fun toEmployee(): Employee {
+    fun toDomain(): Employee {
         return Employee.of(
             name = this.name,
             email = this.email,

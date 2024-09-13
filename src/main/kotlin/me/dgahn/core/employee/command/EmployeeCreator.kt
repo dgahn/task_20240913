@@ -1,4 +1,4 @@
-package me.dgahn.core.employee.query
+package me.dgahn.core.employee.command
 
 import me.dgahn.core.employee.model.Employee
 import me.dgahn.outbound.database.repository.EmployeeJpaRepository
@@ -14,6 +14,6 @@ class EmployeeCreator(
     fun create(employees: List<Employee>): List<Employee> {
         return employeeJpaRepository
             .saveAll(employees.map { it.toEntity() })
-            .map { it.toEmployee() }
+            .map { it.toDomain() }
     }
 }
