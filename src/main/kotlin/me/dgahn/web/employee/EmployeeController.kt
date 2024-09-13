@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -74,5 +75,21 @@ class EmployeeController(
         val request = PageRequest.of(page, size)
         val found = searcher.search(request).map { it.toResponse() }
         return ResponseEntity.ok(PageImpl(found.toList(), request, found.totalElements))
+    }
+
+    @GetMapping("/api/employee/{name}")
+    @Operation(
+        summary = "이름으로 긴급 연락망 목록을 조회",
+        description = "긴급 연락망 목록을 조회합니다. page, size를 통해 원하는 만큼 조회합니다.",
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                content = [Content(schema = Schema(implementation = Response::class))],
+            ),
+            ApiResponse(responseCode = "400", description = "Invalid input"),
+        ],
+    )
+    fun search(@PathVariable("name") name: String): ResponseEntity<Response> {
+        return ResponseEntity.ok(searcher.search(name).toResponse())
     }
 }
