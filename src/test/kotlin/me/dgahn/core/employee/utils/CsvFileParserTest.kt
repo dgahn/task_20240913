@@ -18,14 +18,14 @@ class CsvFileParserTest {
 
     @BeforeEach
     fun setUp() {
-        mockkStatic(File::readText)
         mockkStatic(File::extension)
+        mockkStatic(File::readText)
     }
 
     @AfterEach
     fun cleanUp() {
-        unmockkStatic(File::readText)
         unmockkStatic(File::extension)
+        unmockkStatic(File::readText)
     }
 
     @Test
