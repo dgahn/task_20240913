@@ -7,8 +7,7 @@ import org.springframework.stereotype.Component
 class CsvStringParser : EmployeeStringParser {
     override fun parse(data: String): List<Employee> {
         return runCatching {
-            data
-                .lines()
+            makeLines(data)
                 .filter { it.isNotBlank() }
                 .map { line ->
                     val parts = line.split(",").map { it.trim() }
@@ -20,5 +19,10 @@ class CsvStringParser : EmployeeStringParser {
                     )
                 }
         }.getOrElse { emptyList() }
+    }
+
+    private fun makeLines(data: String): List<String> {
+        val newLines = data.lines()
+        return if (newLines.size <= 1) data.split("\\n") else newLines
     }
 }

@@ -33,5 +33,9 @@ data class Employee(
             val joinedDate = parseJoinedDate(joined)
             return Employee(name = name, email = Email.of(email), tel = PhoneNumber.of(tel), joined = joinedDate)
         }
+
+        fun of(name: String, email: String, tel: String, joined: LocalDate): Employee {
+            return Employee(name = name, email = Email.of(email), tel = PhoneNumber.of(tel), joined = joined)
+        }
     }
 }

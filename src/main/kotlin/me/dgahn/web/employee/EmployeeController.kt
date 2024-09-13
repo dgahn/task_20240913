@@ -1,6 +1,7 @@
 package me.dgahn.web.employee
 
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -8,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import me.dgahn.core.employee.usecase.EmployeeMaker
 import me.dgahn.web.employee.dto.Response
 import me.dgahn.web.employee.dto.toResponse
+import me.dgahn.web.utils.toFiles
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -37,9 +39,13 @@ class EmployeeController(
         ],
     )
     fun create(
-        @RequestPart("data", required = false) data: String = "",
-        @RequestPart("files", required = false) files: List<MultipartFile> = emptyList(),
+        @RequestPart("data", required = false)
+        @Parameter(content = [Content(mediaType = "text/plain;utf-8")])
+        data: String = "",
+        @RequestPart("files", required = false)
+        @Parameter(content = [Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)])
+        files: List<MultipartFile> = emptyList(),
     ): ResponseEntity<List<Response>> {
-        return ResponseEntity(maker.make(data, files).map { it.toResponse() }, HttpStatus.CREATED)
+        return ResponseEntity(maker.make(data, files.toFiles()).map { it.toResponse() }, HttpStatus.CREATED)
     }
 }
