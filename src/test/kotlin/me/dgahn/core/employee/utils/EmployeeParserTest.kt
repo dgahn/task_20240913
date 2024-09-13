@@ -8,10 +8,12 @@ import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
 import io.mockk.verify
 import me.dgahn.core.employee.model.Employee
+import me.dgahn.web.utils.extension
+import me.dgahn.web.utils.readText
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.io.File
+import org.springframework.web.multipart.MultipartFile
 
 class EmployeeParserTest {
     private val mockFileParser = mockk<EmployeeFileParser>()
@@ -27,14 +29,14 @@ class EmployeeParserTest {
 
     @BeforeEach
     fun setUp() {
-        mockkStatic(File::extension)
-        mockkStatic(File::readText)
+        mockkStatic(MultipartFile::extension)
+        mockkStatic(MultipartFile::readText)
     }
 
     @AfterEach
     fun cleanUp() {
-        unmockkStatic(File::extension)
-        unmockkStatic(File::readText)
+        unmockkStatic(MultipartFile::extension)
+        unmockkStatic(MultipartFile::readText)
     }
 
     @Test
@@ -54,8 +56,8 @@ class EmployeeParserTest {
 
     @Test
     fun `파일로부터 직원 객체를 올바르게 파싱할 수 있다`() {
-        val file = mockk<File>()
-        every { file.extension } returns "csv"
+        val file = mockk<MultipartFile>()
+        every { file.extension() } returns "csv"
         every { mockFileParser.parse(listOf(file)) } returns listOf(sampleEmployee3)
         every { mockStringParser.parse("") } returns emptyList()
 
@@ -67,8 +69,8 @@ class EmployeeParserTest {
 
     @Test
     fun `파일이 존재하는데 파싱에 실패하면 예외가 발생해야 한다`() {
-        val file = mockk<File>()
-        every { file.extension } returns "csv"
+        val file = mockk<MultipartFile>()
+        every { file.extension() } returns "csv"
         every { mockFileParser.parse(listOf(file)) } returns emptyList()
         every { mockStringParser.parse("") } returns emptyList()
 
@@ -95,8 +97,8 @@ class EmployeeParserTest {
         val data = """
             김클로, clo@clovf.com, 010-1111-2424, 2012-01-05
         """.trimIndent()
-        val file = mockk<File>()
-        every { file.extension } returns "csv"
+        val file = mockk<MultipartFile>()
+        every { file.extension() } returns "csv"
         every { mockFileParser.parse(listOf(file)) } returns listOf(sampleEmployee3)
         every { mockStringParser.parse(data) } returns listOf(sampleEmployee1)
 

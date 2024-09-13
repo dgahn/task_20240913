@@ -7,10 +7,12 @@ import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
 import io.mockk.verify
 import me.dgahn.core.employee.model.Employee
+import me.dgahn.web.utils.extension
+import me.dgahn.web.utils.readText
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.io.File
+import org.springframework.web.multipart.MultipartFile
 
 class JsonFileParserTest {
     private val jsonStringParser: JsonStringParser = mockk()
@@ -18,19 +20,19 @@ class JsonFileParserTest {
 
     @BeforeEach
     fun setUp() {
-        mockkStatic(File::extension)
-        mockkStatic(File::readText)
+        mockkStatic(MultipartFile::extension)
+        mockkStatic(MultipartFile::readText)
     }
 
     @AfterEach
     fun cleanUp() {
-        unmockkStatic(File::extension)
-        unmockkStatic(File::readText)
+        unmockkStatic(MultipartFile::extension)
+        unmockkStatic(MultipartFile::readText)
     }
 
     @Test
     fun `Json 파일을 읽어서 Employee 리스트를 반환한다`() {
-        val mockFile = mockk<File>()
+        val mockFile = mockk<MultipartFile>()
         val jsonData = """
             [
                 {
@@ -59,7 +61,7 @@ class JsonFileParserTest {
             Employee.of("홍길동", "kildong.hong@clovf.com", "01012345678", "2015.08.15"),
         )
 
-        every { mockFile.extension } returns "json"
+        every { mockFile.extension() } returns "json"
         every { mockFile.readText() } returns jsonData
         every { jsonStringParser.parse(jsonData) } returns employees
 
@@ -71,9 +73,9 @@ class JsonFileParserTest {
 
     @Test
     fun `json 파일이 아닐 경우 빈 리스트를 반환한다`() {
-        val mockFile = mockk<File>()
+        val mockFile = mockk<MultipartFile>()
 
-        every { mockFile.extension } returns "csv"
+        every { mockFile.extension() } returns "csv"
 
         val actual = jsonFileParser.parse(mockFile)
 

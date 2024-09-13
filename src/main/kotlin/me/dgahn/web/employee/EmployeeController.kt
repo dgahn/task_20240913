@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import me.dgahn.core.employee.usecase.EmployeeMaker
 import me.dgahn.web.employee.dto.Response
 import me.dgahn.web.employee.dto.toResponse
-import me.dgahn.web.utils.toFiles
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -46,6 +45,6 @@ class EmployeeController(
         @Parameter(content = [Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)])
         files: List<MultipartFile> = emptyList(),
     ): ResponseEntity<List<Response>> {
-        return ResponseEntity(maker.make(data, files.toFiles()).map { it.toResponse() }, HttpStatus.CREATED)
+        return ResponseEntity(maker.make(data, files).map { it.toResponse() }, HttpStatus.CREATED)
     }
 }

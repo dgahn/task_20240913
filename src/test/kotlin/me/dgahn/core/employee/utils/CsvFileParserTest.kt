@@ -7,10 +7,12 @@ import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
 import io.mockk.verify
 import me.dgahn.core.employee.model.Employee
+import me.dgahn.web.utils.extension
+import me.dgahn.web.utils.readText
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.io.File
+import org.springframework.web.multipart.MultipartFile
 
 class CsvFileParserTest {
     private val csvStringParser: CsvStringParser = mockk()
@@ -18,19 +20,19 @@ class CsvFileParserTest {
 
     @BeforeEach
     fun setUp() {
-        mockkStatic(File::extension)
-        mockkStatic(File::readText)
+        mockkStatic(MultipartFile::extension)
+        mockkStatic(MultipartFile::readText)
     }
 
     @AfterEach
     fun cleanUp() {
-        unmockkStatic(File::extension)
-        unmockkStatic(File::readText)
+        unmockkStatic(MultipartFile::extension)
+        unmockkStatic(MultipartFile::readText)
     }
 
     @Test
     fun `CSV 파일을 읽어서 Employee 리스트를 반환한다`() {
-        val mockFile = mockk<File>()
+        val mockFile = mockk<MultipartFile>()
         val csvData = """
             김철수, charles@clovf.com, 01075312468, 2018.03.07
             박영희, matilda@clovf.com, 01087654321, 2021.04.28
@@ -42,7 +44,7 @@ class CsvFileParserTest {
             Employee.of("홍길동", "kildong.hong@clovf.com", "01012345678", "2015.08.15"),
         )
 
-        every { mockFile.extension } returns "csv"
+        every { mockFile.extension() } returns "csv"
         every { mockFile.readText() } returns csvData
         every { csvStringParser.parse(csvData) } returns employees
 
@@ -54,9 +56,9 @@ class CsvFileParserTest {
 
     @Test
     fun `csv 파일이 아닐 경우 빈 리스트를 반환한다`() {
-        val mockFile = mockk<File>()
+        val mockFile = mockk<MultipartFile>()
 
-        every { mockFile.extension } returns "json"
+        every { mockFile.extension() } returns "json"
 
         val actual = csvFileParser.parse(mockFile)
 
