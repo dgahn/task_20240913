@@ -1,4 +1,4 @@
-package me.dgahn.infrastructure.config
+package me.dgahn.web.config
 
 import org.apache.coyote.ProtocolHandler
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
@@ -15,14 +15,11 @@ import java.util.concurrent.Executors
 @ConditionalOnProperty(value = ["spring.thread-executor"], havingValue = "virtual")
 class VirtualThreadConfig {
     @Bean
-    fun applicationTaskExecutor(): AsyncTaskExecutor {
-        return TaskExecutorAdapter(Executors.newVirtualThreadPerTaskExecutor())
-    }
+    fun applicationTaskExecutor(): AsyncTaskExecutor = TaskExecutorAdapter(Executors.newVirtualThreadPerTaskExecutor())
 
     @Bean
-    fun protocolHandlerVirtualThreadExecutorCustomizer(): TomcatProtocolHandlerCustomizer<*> {
-        return TomcatProtocolHandlerCustomizer { protocolHandler: ProtocolHandler ->
+    fun protocolHandlerVirtualThreadExecutorCustomizer(): TomcatProtocolHandlerCustomizer<*> =
+        TomcatProtocolHandlerCustomizer { protocolHandler: ProtocolHandler ->
             protocolHandler.executor = Executors.newVirtualThreadPerTaskExecutor()
         }
-    }
 }

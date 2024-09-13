@@ -1,4 +1,4 @@
-package me.dgahn.infrastructure.config
+package me.dgahn.outbound.database.config
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing
