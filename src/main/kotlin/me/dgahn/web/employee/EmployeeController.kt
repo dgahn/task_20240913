@@ -33,7 +33,7 @@ class EmployeeController(
 ) {
     @PostMapping("/api/employee", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     @Operation(
-        summary = "긴급 연락망을 추가합니다.",
+        summary = "긴급 연락망 추가",
         description = "csv,json 데이터 또는 파일로 긴급연락망을 추가합니다.",
         responses = [
             ApiResponse(
@@ -57,7 +57,7 @@ class EmployeeController(
 
     @GetMapping("/api/employee")
     @Operation(
-        summary = "긴급 연락망 목록을 조회",
+        summary = "긴급 연락망 목록 조회",
         description = "긴급 연락망 목록을 조회합니다. page, size를 통해 원하는 만큼 조회합니다.",
         responses = [
             ApiResponse(
@@ -78,7 +78,7 @@ class EmployeeController(
 
     @GetMapping("/api/employee/{name}")
     @Operation(
-        summary = "이름으로 긴급 연락망 목록을 조회",
+        summary = "이름으로 긴급 연락망 조회",
         description = "긴급 연락망 목록을 조회합니다. page, size를 통해 원하는 만큼 조회합니다.",
         responses = [
             ApiResponse(
