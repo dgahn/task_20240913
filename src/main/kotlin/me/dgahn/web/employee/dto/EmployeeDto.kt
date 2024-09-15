@@ -3,7 +3,6 @@ package me.dgahn.web.employee.dto
 import com.fasterxml.jackson.annotation.JsonFormat
 import io.swagger.v3.oas.annotations.media.Schema
 import me.dgahn.core.employee.model.Employee
-import org.springframework.data.domain.Page
 import java.time.LocalDate
 
 data class Response(

@@ -1,12 +1,10 @@
 package me.dgahn.core.employee.query
 
 import me.dgahn.core.employee.model.Employee
-import me.dgahn.outbound.database.repository.EmployeeEntity
 import me.dgahn.outbound.database.repository.EmployeeJpaRepository
 import me.dgahn.outbound.database.repository.EmployeePageRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service

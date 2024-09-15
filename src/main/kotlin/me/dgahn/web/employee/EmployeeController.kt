@@ -8,10 +8,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import me.dgahn.core.employee.query.EmployeeSearcher
 import me.dgahn.core.employee.usecase.EmployeeMaker
+import me.dgahn.web.common.PageResponse
 import me.dgahn.web.employee.dto.Response
 import me.dgahn.web.employee.dto.toResponse
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -71,10 +70,10 @@ class EmployeeController(
     fun search(
         @RequestParam(value = "page", defaultValue = "0") page: Int,
         @RequestParam(value = "pageSize", defaultValue = "10") size: Int,
-    ): ResponseEntity<Page<Response>> {
+    ): ResponseEntity<PageResponse<Response>> {
         val request = PageRequest.of(page, size)
         val found = searcher.search(request).map { it.toResponse() }
-        return ResponseEntity.ok(PageImpl(found.toList(), request, found.totalElements))
+        return ResponseEntity.ok(PageResponse(page, found.totalElements, found.content))
     }
 
     @GetMapping("/api/employee/{name}")
@@ -89,7 +88,9 @@ class EmployeeController(
             ApiResponse(responseCode = "400", description = "Invalid input"),
         ],
     )
-    fun search(@PathVariable("name") name: String): ResponseEntity<Response> {
+    fun search(
+        @PathVariable("name") name: String,
+    ): ResponseEntity<Response> {
         return ResponseEntity.ok(searcher.search(name).toResponse())
     }
 }
